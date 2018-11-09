@@ -10,8 +10,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'com.github.dcendents.android-maven'
-group='com.github.readium'
+//apply plugin: 'com.github.dcendents.android-maven'
+group='com.github.bookbeatadmin'
 
 android {
     flavorDimensions "testapp"
@@ -32,33 +32,43 @@ android {
         intTestapp {
             dimension "testapp"
         }
-        intTestappWithLcp {
-            dimension "testapp"
-        }
-        devTestapp {
-            dimension "testapp"
-        }
-        devTestappWithLcp {
-            dimension "testapp"
-        }
+//        intTestappWithLcp {
+//            dimension "testapp"
+//        }
+//        devTestapp {
+//            dimension "testapp"
+//        }
+//        devTestappWithLcp {
+//            dimension "testapp"
+//        }
     }
 
     // default build flavour
     defaultPublishConfig "intTestappDebug"
 }
 
+def support_version = "27.0.0"
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation 'com.jakewharton.timber:timber:4.7.1'
-    intTestappImplementation 'com.github.readium:r2-shared-kotlin:develop-SNAPSHOT'
-    intTestappWithLcpImplementation 'com.github.readium:r2-shared-kotlin:develop-SNAPSHOT'
-    if (findProject(':r2-shared')) {
-        devTestappImplementation project(':r2-shared')
-        devTestappWithLcpImplementation project(':r2-shared')
-    }
-    intTestappImplementation 'com.github.readium:r2-shared-kotlin:develop-SNAPSHOT'
-    intTestappWithLcpImplementation 'com.github.readium:r2-shared-kotlin:develop-SNAPSHOT'
+
+    // bookbeat fork of the shared module
+    implementation 'com.github.bookbeatadmin:r2-shared-kotlin:1.0.5'
+
+//    implementation project(':r2-shared')
+//    implementation 'com.github.readium:r2-shared-kotlin:develop-21b82fd92a-1'
+//    implementation 'com.github.readium:r2-shared-kotlin:1.0.3'
+//    implementation 'com.github.readium:r2-shared-kotlin:develop-21b82fd92a-1'
+//    intTestappImplementation 'com.github.readium:r2-shared-kotlin:develop-SNAPSHOT'
+//    intTestappWithLcpImplementation 'com.github.readium:r2-shared-kotlin:develop-SNAPSHOT'
+//    if (findProject(':r2-shared')) {
+//        devTestappImplementation project(':r2-shared')
+//        devTestappWithLcpImplementation project(':r2-shared')
+//    }
+//    intTestappImplementation 'com.github.readium:r2-shared-kotlin:develop-SNAPSHOT'
+//    intTestappWithLcpImplementation 'com.github.readium:r2-shared-kotlin:develop-SNAPSHOT'
 
     //TODO conflicting support libraries, excluding these
     implementation('com.mcxiaoke.koi:core:0.5.5') {
@@ -69,8 +79,8 @@ dependencies {
         exclude module: 'support-v4'
     }
     implementation "com.android.support:appcompat-v7:$support_version"
-    implementation 'org.nanohttpd:nanohttpd:2.3.2-SNAPSHOT'
-    implementation 'org.nanohttpd:nanohttpd-nanolets:2.3.2-SNAPSHOT'
+    api 'org.nanohttpd:nanohttpd:2.3.2-SNAPSHOT'
+    api 'org.nanohttpd:nanohttpd-nanolets:2.3.2-SNAPSHOT'
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'commons-io:commons-io:2.4'
     implementation 'org.zeroturnaround:zt-zip:1.12'

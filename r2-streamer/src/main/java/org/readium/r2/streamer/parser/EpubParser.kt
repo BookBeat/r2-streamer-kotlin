@@ -10,9 +10,11 @@
 package org.readium.r2.streamer.parser
 
 import android.util.Log
-import org.readium.r2.shared.drm.Drm
+import org.readium.r2.shared.ContentLengthInfo
 import org.readium.r2.shared.Encryption
+import org.readium.r2.shared.Link
 import org.readium.r2.shared.Publication
+import org.readium.r2.shared.drm.Drm
 import org.readium.r2.shared.parser.xml.XmlParser
 import org.readium.r2.streamer.container.Container
 import org.readium.r2.streamer.container.ContainerEpub
@@ -22,7 +24,6 @@ import org.readium.r2.streamer.parser.epub.EncryptionParser
 import org.readium.r2.streamer.parser.epub.NCXParser
 import org.readium.r2.streamer.parser.epub.NavigationDocumentParser
 import org.readium.r2.streamer.parser.epub.OPFParser
-import org.zeroturnaround.zip.ZipUtil
 import java.io.File
 
 // Some constants useful to parse an Epub document
@@ -104,7 +105,7 @@ class EpubParser : PublicationParser {
 
         parseEncryption(container, publication, drm)
 
-//        val fetcher = Fetcher(publication, container)
+        extractContentLengthInfo(publication, container)
         parseNavigationDocument(container, publication)
         parseNcxDocument(container, publication)
 
@@ -192,6 +193,19 @@ class EpubParser : PublicationParser {
         if (publication.pageList.isEmpty())
             publication.pageList.plusAssign(ncxp.pageList(ncxDocument))
         return
+    }
+
+    /** Extracts the data from each spine item to create a ContentLengthInfo.
+     * This will be used to track progress and calculate percentage. */
+    private fun extractContentLengthInfo(publication: Publication, container: EpubContainer) {
+        val contentPairs = mutableListOf<Pair<Link, Int>>()
+
+        publication.spine.forEach {
+            val data = container.data(it.href!!)
+            val dataLength = data.size
+            contentPairs.add(Pair(it, dataLength))
+        }
+        publication.contentLengthInfo = ContentLengthInfo(contentPairs)
     }
 
 }
